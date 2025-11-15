@@ -44,8 +44,11 @@ export default function MyInfo() {
 
   if (isValidating) {
     return (
-      <div style={{ padding: 20, textAlign: "center" }}>
-        <div className="loading">Validating access token...</div>
+      <div style={{ padding: "2rem", textAlign: "center", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
+          <div style={{ fontSize: "1.1rem", color: "#666" }}>Validating access token...</div>
+        </div>
       </div>
     );
   }
@@ -76,49 +79,73 @@ export default function MyInfo() {
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "900px", margin: "0 auto" }}>
-      <h1>👤 My Information</h1>
+    <div style={{ padding: "2rem", maxWidth: "1100px", margin: "0 auto" }}>
+      {/* Header */}
+      <div style={{ marginBottom: "2rem" }}>
+        <h1 style={{ fontSize: "2.5rem", color: "#333", margin: "0 0 0.5rem 0" }}>👤 My Information</h1>
+        <p style={{ color: "#666", fontSize: "1.05rem", margin: 0 }}>View and manage your personal information and preferences</p>
+      </div>
 
-      {/* User Header Card */}
+      {/* User Header Card with Gradient */}
       <div
         style={{
-          backgroundColor: "#f8f9fa",
-          border: "1px solid #dee2e6",
-          borderRadius: "8px",
+          backgroundImage: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+          borderRadius: "12px",
           padding: "2rem",
           marginBottom: "2rem",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          boxShadow: "0 8px 16px rgba(245, 87, 108, 0.3)",
+          color: "white"
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "2rem", marginBottom: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
           <div
             style={{
-              width: "100px",
-              height: "100px",
+              width: "120px",
+              height: "120px",
               borderRadius: "50%",
-              backgroundColor: "#007bff",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              border: "3px solid white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "2.5rem",
-              color: "white",
+              fontSize: "3.5rem",
+              flexShrink: 0,
             }}
           >
             👨‍💼
           </div>
           <div>
-            <h2 style={{ margin: "0 0 0.5rem 0" }}>{auth.user?.name}</h2>
-            <p style={{ margin: "0", color: "#666", fontSize: "1rem" }}>{auth.user?.email}</p>
-            <p style={{ margin: "0.5rem 0 0 0", color: "#999", fontSize: "0.875rem" }}>
-              User ID: <code>{auth.user?.id}</code>
+            <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "2rem" }}>{auth.user?.name}</h2>
+            <p style={{ margin: "0.25rem 0", opacity: 0.95, fontSize: "1rem" }}>📧 {auth.user?.email}</p>
+            <p style={{ margin: "0.5rem 0 0 0", opacity: 0.85, fontSize: "0.9rem" }}>
+              🔑 ID: <code style={{ backgroundColor: "rgba(255,255,255,0.2)", padding: "0.25rem 0.5rem", borderRadius: "3px" }}>{auth.user?.id}</code>
             </p>
           </div>
         </div>
       </div>
 
+      {/* Stats Overview Cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
+        <div style={{ backgroundColor: "white", border: "1px solid #dee2e6", borderRadius: "8px", padding: "1.5rem", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", textAlign: "center" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>✅</div>
+          <div style={{ color: "#666", fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.25rem" }}>Status</div>
+          <div style={{ color: "#28a745", fontSize: "1.1rem", fontWeight: "bold" }}>Active</div>
+        </div>
+        <div style={{ backgroundColor: "white", border: "1px solid #dee2e6", borderRadius: "8px", padding: "1.5rem", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", textAlign: "center" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>🔐</div>
+          <div style={{ color: "#666", fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.25rem" }}>Security Level</div>
+          <div style={{ color: "#ffc107", fontSize: "1.1rem", fontWeight: "bold" }}>Medium</div>
+        </div>
+        <div style={{ backgroundColor: "white", border: "1px solid #dee2e6", borderRadius: "8px", padding: "1.5rem", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", textAlign: "center" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📊</div>
+          <div style={{ color: "#666", fontSize: "0.875rem", fontWeight: "600", marginBottom: "0.25rem" }}>Login Count</div>
+          <div style={{ color: "#007bff", fontSize: "1.1rem", fontWeight: "bold" }}>42</div>
+        </div>
+      </div>
+
       {/* Profile Section */}
       <div style={{ marginBottom: "2rem" }}>
-        <h3 style={{ borderBottom: "2px solid #007bff", paddingBottom: "0.5rem", marginBottom: "1rem" }}>
+        <h3 style={{ color: "#333", fontSize: "1.3rem", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           📋 Profile Information
         </h3>
         <div
@@ -126,145 +153,39 @@ export default function MyInfo() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "1rem",
-            backgroundColor: "#fff",
+            backgroundColor: "white",
             border: "1px solid #dee2e6",
-            borderRadius: "4px",
+            borderRadius: "8px",
             padding: "1.5rem",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
           }}
         >
           {Object.entries(mockData.profile).map(([key, value]) => (
-            <div key={key}>
-              <dt style={{ fontWeight: "bold", color: "#333", marginBottom: "0.25rem" }}>
-                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")}:
-              </dt>
-              <dd style={{ margin: "0", color: "#666" }}>{value}</dd>
+            <div key={key} style={{ padding: "1rem", backgroundColor: "#f8f9fa", borderRadius: "6px" }}>
+              <div style={{ fontWeight: "600", color: "#333", marginBottom: "0.5rem", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")}
+              </div>
+              <div style={{ color: "#666", fontSize: "0.95rem" }}>{value}</div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Preferences Section */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h3 style={{ borderBottom: "2px solid #007bff", paddingBottom: "0.5rem", marginBottom: "1rem" }}>
-          ⚙️ Preferences
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            backgroundColor: "#fff",
-            border: "1px solid #dee2e6",
-            borderRadius: "4px",
-            padding: "1.5rem",
-          }}
-        >
-          {Object.entries(mockData.preferences).map(([key, value]) => (
-            <div key={key}>
-              <dt style={{ fontWeight: "bold", color: "#333", marginBottom: "0.25rem" }}>
-                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")}:
-              </dt>
-              <dd style={{ margin: "0", color: "#666" }}>
-                {typeof value === "boolean" ? (value ? "✓ Yes" : "✗ No") : value}
-              </dd>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Statistics Section */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h3 style={{ borderBottom: "2px solid #007bff", paddingBottom: "0.5rem", marginBottom: "1rem" }}>
-          📊 Statistics
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            backgroundColor: "#fff",
-            border: "1px solid #dee2e6",
-            borderRadius: "4px",
-            padding: "1.5rem",
-          }}
-        >
-          {Object.entries(mockData.statistics).map(([key, value]) => (
-            <div key={key}>
-              <dt style={{ fontWeight: "bold", color: "#333", marginBottom: "0.25rem" }}>
-                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")}:
-              </dt>
-              <dd style={{ margin: "0", color: "#666" }}>{String(value)}</dd>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Roles & Permissions Section */}
-      <div style={{ marginBottom: "2rem" }}>
-        <h3 style={{ borderBottom: "2px solid #007bff", paddingBottom: "0.5rem", marginBottom: "1rem" }}>
-          🔐 Roles & Permissions
-        </h3>
-        <div
-          style={{
-            backgroundColor: "#fff",
-            border: "1px solid #dee2e6",
-            borderRadius: "4px",
-            padding: "1.5rem",
-          }}
-        >
-          <div style={{ marginBottom: "1.5rem" }}>
-            <strong style={{ display: "block", marginBottom: "0.5rem", color: "#333" }}>Roles:</strong>
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              {mockData.roles.map((role) => (
-                <span
-                  key={role}
-                  style={{
-                    backgroundColor: "#007bff",
-                    color: "white",
-                    padding: "0.25rem 0.75rem",
-                    borderRadius: "20px",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div>
-            <strong style={{ display: "block", marginBottom: "0.5rem", color: "#333" }}>Permissions:</strong>
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              {mockData.permissions.map((perm) => (
-                <span
-                  key={perm}
-                  style={{
-                    backgroundColor: "#28a745",
-                    color: "white",
-                    padding: "0.25rem 0.75rem",
-                    borderRadius: "20px",
-                    fontSize: "0.875rem",
-                  }}
-                >
-                  {perm}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Info Box */}
       <div
         style={{
-          backgroundColor: "#e7f3ff",
-          border: "1px solid #b3d9ff",
-          borderRadius: "4px",
-          padding: "1rem",
-          color: "#004085",
-          fontSize: "0.875rem",
+          backgroundColor: "#e3f2fd",
+          border: "1px solid #90caf9",
+          borderRadius: "8px",
+          padding: "1.5rem",
+          color: "#1565c0"
         }}
       >
-        <strong>ℹ️ Note:</strong> This information is loaded from frontend mock data. In a real application, this would come from your backend API.
+        <strong style={{ fontSize: "1rem", display: "block", marginBottom: "0.5rem" }}>ℹ️ Information</strong>
+        <p style={{ margin: "0.5rem 0", lineHeight: "1.6" }}>
+          This information is loaded from <strong>frontend mock data</strong>. In a real application, 
+          this would come from your backend API. The access token has been validated before displaying this page.
+        </p>
       </div>
     </div>
   );
