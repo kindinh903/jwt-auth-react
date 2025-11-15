@@ -92,12 +92,10 @@ export default function ProtectedRoute({ children }) {
     return children;
   }
 
-  // Show unauthorized screen for ANY invalid access (sẽ tự redirect sau 3s)
   if (validationResult === "unauthorized") {
     console.log("[ProtectedRoute] Rendering Unauthorized screen");
     return <Unauthorized />;
   }
 
-  // Fallback - không nên tới đây
   return <Navigate to="/login" replace />;
 }
