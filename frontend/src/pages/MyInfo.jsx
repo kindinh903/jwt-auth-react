@@ -116,13 +116,10 @@ export default function MyInfo() {
           </div>
           <div>
             <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "2rem" }}>{auth.user?.name}</h2>
-            <p style={{ margin: "0.25rem 0", opacity: 0.95, fontSize: "1rem" }}>📧 {auth.user?.email}</p>
-            <p style={{ margin: "0.5rem 0 0 0", opacity: 0.85, fontSize: "0.9rem" }}>
-              🔑 ID: <code style={{ backgroundColor: "rgba(255,255,255,0.2)", padding: "0.25rem 0.5rem", borderRadius: "3px" }}>{auth.user?.id}</code>
-            </p>
           </div>
         </div>
       </div>
+      
 
       {/* Stats Overview Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "2rem" }}>
