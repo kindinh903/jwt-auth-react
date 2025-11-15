@@ -12,73 +12,114 @@ function Navigation() {
   const auth = useAuth();
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path ? "style" : "";
+  const isActive = (path) => location.pathname === path;
+
+  // Base styles for header and buttons
+  const navStyle = {
+    position: "sticky",
+    top: 0,
+    zIndex: 100,
+    backgroundColor: "#ffffffcc",
+    backdropFilter: "saturate(180%) blur(6px)",
+    borderBottom: "1px solid #e9ecef",
+  };
+
+  const containerStyle = {
+    margin: "0 auto",
+    maxWidth: 1024,
+    padding: "0.75rem 1rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "1rem",
+  };
+
+  const brandStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.75rem",
+    color: "#0d6efd",
+    textDecoration: "none",
+    fontWeight: 700,
+    fontSize: "1.125rem",
+    whiteSpace: "nowrap",
+  };
+
+  const linksRowStyle = {
+    display: "flex",
+  flexDirection: "row",
+  flexWrap: "nowrap",
+    alignItems: "center",
+  gap: "0.5rem",
+  overflowX: "auto",
+  overflowY: "hidden",
+  WebkitOverflowScrolling: "touch",
+  };
+
+  const linkBaseStyle = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0.45rem 0.9rem",
+    borderRadius: 9999,
+    border: "1px solid #dee2e6",
+    backgroundColor: "#fff",
+    color: "#0d6efd",
+    textDecoration: "none",
+    fontSize: "0.95rem",
+    lineHeight: 1,
+    whiteSpace: "nowrap",
+  flex: "0 0 auto",
+  cursor: "pointer",
+    transition: "all .15s ease", 
+  };
+
+  const linkActiveStyle = {
+    backgroundColor: "#0d6efd",
+    color: "#fff",
+    borderColor: "#0d6efd",
+    boxShadow: "0 2px 6px rgba(13,110,253,0.25)",
+    fontWeight: 600,
+  };
 
   return (
-    <nav style={{ 
-      padding: "1rem",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: "#fff",
-      borderBottom: "1px solid #dee2e6",
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-    }}>
-      <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-        <Link to="/" style={{ 
-          fontSize: "1.25rem", 
-          fontWeight: "bold",
-          color: "#007bff",
-          textDecoration: "none"
-        }}>
-          🔐 JWT Auth
-        </Link>
-        
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <Link to="/" style={{ 
-            color: "#007bff",
-            textDecoration: "none",
-            fontWeight: location.pathname === "/" ? "bold" : "normal"
-          }}>
-            Home
-          </Link>
-          {auth.user && (
-            <>
-              <Link to="/dashboard" style={{ 
-                color: "#007bff",
-                textDecoration: "none",
-                fontWeight: location.pathname === "/dashboard" ? "bold" : "normal"
-              }}>
-                Dashboard
-              </Link>
-              <Link to="/my-info" style={{ 
-                color: "#007bff",
-                textDecoration: "none",
-                fontWeight: location.pathname === "/my-info" ? "bold" : "normal"
-              }}>
-                My Info
-              </Link>
-            </>
-          )}
-          {!auth.user && (
-            <Link to="/login" style={{ 
-              color: "#007bff",
-              textDecoration: "none",
-              fontWeight: location.pathname === "/login" ? "bold" : "normal"
-            }}>
-              Login
-            </Link>
-          )}
+    <nav style={navStyle}>
+      <div style={containerStyle}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", minWidth: 0 }}>
+          <Link to="/" style={brandStyle}>🔐 JWT Auth</Link>
+          <div style={linksRowStyle}>
+            <Link to="/" style={{
+              ...linkBaseStyle,
+              ...(isActive("/") ? linkActiveStyle : {}),
+            }}>Home</Link>
+            {auth.user ? (
+              <>
+                <Link to="/dashboard" style={{
+                  ...linkBaseStyle,
+                  ...(isActive("/dashboard") ? linkActiveStyle : {}),
+                }}>Dashboard</Link>
+                <Link to="/my-info" style={{
+                  ...linkBaseStyle,
+                  ...(isActive("/my-info") ? linkActiveStyle : {}),
+                }}>My Info</Link>
+              </>
+            ) : (
+              <Link to="/login" style={{
+                ...linkBaseStyle,
+                ...(isActive("/login") ? linkActiveStyle : {}),
+              }}>Login</Link>
+            )}
+          </div>
         </div>
-      </div>
 
-      {auth.user && (
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontSize: "0.875rem", color: "#666" }}>
-            Welcome, <strong>{auth.user.name}</strong>
-          </span>
-        </div>
-      )}
+        {auth.user && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <span style={{ fontSize: "0.9rem", color: "#555", whiteSpace: "nowrap" }}>
+              Welcome, <strong>{auth.user.name}</strong>
+            </span>
+          </div>
+        )}
+      </div>
     </nav>
   );
 }
