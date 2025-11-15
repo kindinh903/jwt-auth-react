@@ -48,8 +48,13 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (!originalRequest) return Promise.reject(error);
 
-    // only handle 401 for protected endpoints
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    // only handle 401 for protected endpoints (but NOT /auth/refresh itself)
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh")
+    ) {
       // mark retry so we don't loop
       originalRequest._retry = true;
 
@@ -71,6 +76,7 @@ api.interceptors.response.use(
       try {
         const newTokens = await refreshToken(); // calls /auth/refresh using refresh token from localStorage
         if (newTokens && newTokens.accessToken) {
+          console.log("Access token: ", newTokens.accessToken);
           setAccessToken(newTokens.accessToken);
           originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
           onRefreshed(newTokens.accessToken);

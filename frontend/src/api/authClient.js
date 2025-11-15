@@ -1,7 +1,7 @@
 // src/api/authClient.js
 import api, { setAccessToken, clearAccessToken } from "./axios";
 
-const REFRESH_TOKEN_KEY = "app_refresh_token";
+const REFRESH_TOKEN_KEY = "refreshToken";
 
 export async function login(credentials) {
   // server returns { accessToken, refreshToken, user }
@@ -16,11 +16,18 @@ export async function login(credentials) {
 export async function refreshToken() {
   const refresh = localStorage.getItem(REFRESH_TOKEN_KEY);
   if (!refresh) throw new Error("No refresh token");
-  const res = await api.post("/auth/refresh", { refreshToken: refresh });
-  const { accessToken, refreshToken: newRefresh } = res.data;
-  setAccessToken(accessToken);
-  if (newRefresh) localStorage.setItem(REFRESH_TOKEN_KEY, newRefresh);
-  return { accessToken, refreshToken: newRefresh || refresh };
+  
+  try {
+    const res = await api.post("/auth/refresh", { refreshToken: refresh });
+    const { accessToken, refreshToken: newRefresh } = res.data;
+    setAccessToken(accessToken);
+    if (newRefresh) localStorage.setItem(REFRESH_TOKEN_KEY, newRefresh);
+    return { accessToken, refreshToken: newRefresh || refresh };
+  } catch (error) {
+    // Ensure we always throw on refresh failure
+    console.error("[authClient] Refresh token request failed:", error.response?.data || error.message);
+    throw error;
+  }
 }
 
 export async function logout() {

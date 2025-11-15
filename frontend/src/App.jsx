@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
+import MyInfo from "./pages/MyInfo";
 import { useAuth } from "./auth/authProvider";
 
 function Navigation() {
@@ -42,13 +43,22 @@ function Navigation() {
             Home
           </Link>
           {auth.user && (
-            <Link to="/dashboard" style={{ 
-              color: "#007bff",
-              textDecoration: "none",
-              fontWeight: location.pathname === "/dashboard" ? "bold" : "normal"
-            }}>
-              Dashboard
-            </Link>
+            <>
+              <Link to="/dashboard" style={{ 
+                color: "#007bff",
+                textDecoration: "none",
+                fontWeight: location.pathname === "/dashboard" ? "bold" : "normal"
+              }}>
+                Dashboard
+              </Link>
+              <Link to="/my-info" style={{ 
+                color: "#007bff",
+                textDecoration: "none",
+                fontWeight: location.pathname === "/my-info" ? "bold" : "normal"
+              }}>
+                My Info
+              </Link>
+            </>
           )}
           {!auth.user && (
             <Link to="/login" style={{ 
@@ -86,6 +96,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/my-info" 
+            element={
+              <ProtectedRoute>
+                <MyInfo />
               </ProtectedRoute>
             } 
           />

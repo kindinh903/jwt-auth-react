@@ -127,17 +127,11 @@ app.post("/auth/refresh", (req, res) => {
     // Issue new tokens (refresh token rotation)
     const user = { id: payload.sub, email: payload.email };
     const newAccessToken = signAccess(user);
-    const newRefreshToken = signRefresh(user);
-    
-    // Revoke old refresh token and store new one
-    refreshTokensStore.delete(refreshToken);
-    refreshTokensStore.add(newRefreshToken);
-    
+        
     log("INFO", "Token refresh successful - new tokens issued", { email: user.email, tokenCount: refreshTokensStore.size });
     
     res.json({
       accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
     });
   } catch (err) {
     refreshTokensStore.delete(refreshToken);
