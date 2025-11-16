@@ -1,57 +1,12 @@
 // src/pages/MyInfo.jsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useAuth } from "../auth/authProvider";
-import { getAccessToken } from "../api/axios";
-import { useNavigate } from "react-router-dom";
-import api from "../api/axios";
 
 export default function MyInfo() {
   const auth = useAuth();
-  const navigate = useNavigate();
-  const [isValidating, setIsValidating] = useState(true);
-  const [hasValidToken, setHasValidToken] = useState(false);
 
-  // Kiểm tra access token hợp lệ bằng cách gọi /user/me
-  useEffect(() => {
-    const validateToken = async () => {
-      try {
-        const token = getAccessToken();
-        if (!token) {
-          setHasValidToken(false);
-          setIsValidating(false);
-          return;
-        }
-
-        // Gọi API để xác thực token
-        await api.get("/user/me");
-        setHasValidToken(true);
-      } catch (error) {
-        console.error("Token validation failed:", error);
-        setHasValidToken(false);
-      } finally {
-        setIsValidating(false);
-      }
-    };
-
-    validateToken();
-  }, []);
-
-  // Nếu không có access token hợp lệ, redirect
-  if (!isValidating && !hasValidToken) {
-    navigate("/login", { replace: true });
-    return null;
-  }
-
-  if (isValidating) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
-          <div style={{ fontSize: "1.1rem", color: "#666" }}>Validating access token...</div>
-        </div>
-      </div>
-    );
-  }
+  // MyInfo được bảo vệ bởi ProtectedRoute, nên auth.user luôn tồn tại ở đây
+  // Không cần check isInitializing hay user validation lại
 
   // Mock user data
   const mockData = {

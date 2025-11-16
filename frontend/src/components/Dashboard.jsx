@@ -1,6 +1,6 @@
 // src/components/Dashboard.jsx
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
 import { useAuth } from "../auth/authProvider";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 export default function Dashboard() {
   const auth = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
+  // Use cached data from AuthProvider, don't refetch
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["me"],
     queryFn: async () => {
@@ -17,6 +19,8 @@ export default function Dashboard() {
     },
     retry: false,
     refetchOnWindowFocus: false,
+    // Start with auth.user data if available
+    initialData: auth.user ? { user: auth.user } : undefined,
   });
 
   const handleLogout = async () => {

@@ -112,12 +112,12 @@ app.post("/auth/refresh", (req, res) => {
   log("INFO", "Token refresh attempt");
   
   if (!refreshToken) {
-    log("WARN", "Token refresh failed - no refresh token provided");
+    log("WARN", "1Token refresh failed - no refresh token provided");
     return res.status(400).json({ message: "Refresh token is required" });
   }
   
   if (!refreshTokensStore.has(refreshToken)) {
-    log("WARN", "Token refresh failed - invalid or revoked refresh token");
+    log("WARN", "2Token refresh failed - invalid or revoked refresh token");
     return res.status(401).json({ message: "Invalid or revoked refresh token" });
   }
   
@@ -128,14 +128,14 @@ app.post("/auth/refresh", (req, res) => {
     const user = { id: payload.sub, email: payload.email };
     const newAccessToken = signAccess(user);
         
-    log("INFO", "Token refresh successful - new tokens issued", { email: user.email, tokenCount: refreshTokensStore.size });
+    log("INFO", "3Token refresh successful - new tokens issued", { email: user.email, tokenCount: refreshTokensStore.size });
     
     res.json({
       accessToken: newAccessToken,
     });
   } catch (err) {
     refreshTokensStore.delete(refreshToken);
-    log("WARN", "Token refresh failed - token validation error", { error: err.message });
+    log("WARN", "4Token refresh failed - token validation error", { error: err.message });
     return res.status(401).json({ message: "Refresh token expired or invalid", error: err.message });
   }
 });
