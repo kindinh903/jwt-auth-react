@@ -1,27 +1,15 @@
 // src/components/Dashboard.jsx
 import React from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import api from "../api/axios";
 import { useAuth } from "../auth/authProvider";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  // Use cached data from AuthProvider, don't refetch
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      const r = await api.get("/user/me");
-      return r.data;
-    },
-    retry: false,
-    refetchOnWindowFocus: false,
-    // Start with auth.user data if available
-    initialData: auth.user ? { user: auth.user } : undefined,
-  });
+  // Dashboard được bảo vệ bởi ProtectedRoute, nên auth.user luôn tồn tại ở đây
+  // Không cần gọi API /user/me riêng, chỉ sử dụng auth.user từ AuthProvider
+  const userData = auth.user;
 
   const handleLogout = async () => {
     try {
@@ -32,72 +20,6 @@ export default function Dashboard() {
       navigate("/login", { replace: true });
     }
   };
-
-  const handleRefreshUser = async () => {
-    await refetch();
-  };
-
-  if (isLoading) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
-          <div style={{ fontSize: "1.1rem", color: "#666" }}>Loading user information...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: "2rem", maxWidth: "600px", margin: "2rem auto" }}>
-        <div style={{ 
-          backgroundColor: "#ffe5e5", 
-          border: "2px solid #dc3545", 
-          borderRadius: "8px", 
-          padding: "1.5rem",
-          color: "#721c24"
-        }}>
-          <strong style={{ fontSize: "1.1rem", display: "block", marginBottom: "0.5rem" }}>❌ Error loading user information</strong>
-          <p style={{ margin: "0.5rem 0", color: "#721c24" }}>{error.message}</p>
-        </div>
-        <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
-          <button 
-            onClick={handleRefreshUser} 
-            style={{ 
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "1rem",
-              fontWeight: "bold"
-            }}
-          >
-            🔄 Try Again
-          </button>
-          <button 
-            onClick={handleLogout}
-            style={{ 
-              flex: 1,
-              padding: "0.75rem",
-              backgroundColor: "#dc3545",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "1rem",
-              fontWeight: "bold"
-            }}
-          >
-            🚪 Logout
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
@@ -120,7 +42,7 @@ export default function Dashboard() {
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <div style={{ fontSize: "3rem" }}>👋</div>
           <div>
-            <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.8rem" }}>Welcome, {data?.user?.name}!</h2>
+            <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.8rem" }}>Welcome, {userData?.name}!</h2>
           </div>
         </div>
       </div>
@@ -147,7 +69,7 @@ export default function Dashboard() {
             fontSize: "0.95rem",
             wordBreak: "break-all"
           }}>
-            {data?.user?.id}
+            {userData?.id}
           </code>
         </div>
 
@@ -170,7 +92,7 @@ export default function Dashboard() {
             color: "#333",
             fontSize: "0.95rem"
           }}>
-            {data?.user?.email}
+            {userData?.email}
           </code>
         </div>
 
@@ -192,7 +114,7 @@ export default function Dashboard() {
             color: "#333",
             fontSize: "0.95rem"
           }}>
-            {data?.user?.name}
+            {userData?.name}
           </div>
         </div>
 
@@ -229,7 +151,7 @@ export default function Dashboard() {
         marginBottom: "2rem",
         boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
       }}>
-        <h3 style={{ marginTop: 0, marginBottom: "1rem", color: "#333", fontSize: "1.1rem" }}>📋 Full API Response</h3>
+        <h3 style={{ marginTop: 0, marginBottom: "1rem", color: "#333", fontSize: "1.1rem" }}>📋 User Data</h3>
         <pre style={{
           backgroundColor: "#f8f9fa",
           border: "1px solid #dee2e6",
@@ -240,40 +162,12 @@ export default function Dashboard() {
           maxHeight: "300px",
           color: "#333"
         }}>
-          {JSON.stringify(data, null, 2)}
+          {JSON.stringify(userData, null, 2)}
         </pre>
       </div>
 
       {/* Action Buttons */}
       <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
-        <button 
-          onClick={handleRefreshUser}
-          style={{
-            flex: 1,
-            padding: "1rem",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "all 0.2s",
-            boxShadow: "0 2px 8px rgba(40, 167, 69, 0.2)"
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "#218838";
-            e.target.style.transform = "translateY(-2px)";
-            e.target.style.boxShadow = "0 4px 12px rgba(40, 167, 69, 0.3)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "#28a745";
-            e.target.style.transform = "translateY(0)";
-            e.target.style.boxShadow = "0 2px 8px rgba(40, 167, 69, 0.2)";
-          }}
-        >
-          🔄 Refresh User Info
-        </button>
         <button 
           onClick={handleLogout}
           style={{
