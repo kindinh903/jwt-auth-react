@@ -66,6 +66,52 @@ function verifyAccessToken(req, res, next) {
   }
 }
 
+// Register endpoint
+app.post("/auth/register", (req, res) => {
+  const { email, password, name } = req.body;
+  
+  log("INFO", "Register attempt", { email });
+  
+  // Validate input
+  if (!email || !password || !name) {
+    log("WARN", "Register failed - missing fields", { email });
+    return res.status(400).json({ message: "Email, password, and name are required" });
+  }
+  
+  // Validate password length
+  if (password.length < 6) {
+    log("WARN", "Register failed - password too short", { email });
+    return res.status(400).json({ message: "Password must be at least 6 characters" });
+  }
+  
+  // Check if email already exists
+  const existingAccount = validAccounts.find((acc) => acc.email === email);
+  if (existingAccount) {
+    log("WARN", "Register failed - email already exists", { email });
+    return res.status(409).json({ message: "Email already registered" });
+  }
+  
+  // Create new account
+  const newAccount = { email, password, name };
+  validAccounts.push(newAccount);
+  
+  // Issue tokens
+  const user = { id: newAccount.email, email: newAccount.email, name: newAccount.name };
+  const accessToken = signAccess(user);
+  const refreshToken = signRefresh(user);
+  
+  // Store refresh token
+  refreshTokensStore.add(refreshToken);
+  
+  log("INFO", "Register successful - new account created and tokens issued", { email: user.email, name: user.name, tokenCount: refreshTokensStore.size });
+  
+  res.status(201).json({
+    accessToken,
+    refreshToken,
+    user: { id: user.id, email: user.email, name: user.name },
+  });
+});
+
 // Login endpoint
 app.post("/auth/login", (req, res) => {
   const { email, password } = req.body;

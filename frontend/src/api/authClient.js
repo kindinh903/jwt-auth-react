@@ -12,6 +12,16 @@ const apiPlain = axios.create({
   withCredentials: false,
 });
 
+export async function register(credentials) {
+  // server returns { accessToken, refreshToken, user }
+  const res = await api.post("/auth/register", credentials);
+  const { accessToken, refreshToken, user } = res.data;
+  // store tokens per requirements
+  setAccessToken(accessToken);
+  localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+  return { accessToken, refreshToken, user };
+}
+
 export async function login(credentials) {
   // server returns { accessToken, refreshToken, user }
   const res = await api.post("/auth/login", credentials);

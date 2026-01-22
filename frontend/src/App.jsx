@@ -2,6 +2,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Login from "./components/Login";
+import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
@@ -104,10 +105,16 @@ function Navigation() {
                 }}>My Info</Link>
               </>
             ) : (
-              <Link to="/login" style={{
-                ...linkBaseStyle,
-                ...(isActive("/login") ? linkActiveStyle : {}),
-              }}>Login</Link>
+              <>
+                <Link to="/login" style={{
+                  ...linkBaseStyle,
+                  ...(isActive("/login") ? linkActiveStyle : {}),
+                }}>Login</Link>
+                <Link to="/register" style={{
+                  ...linkBaseStyle,
+                  ...(isActive("/register") ? linkActiveStyle : {}),
+                }}>Register</Link>
+              </>
             )}
           </div>
         </div>
@@ -132,6 +139,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route 
             path="/dashboard" 
             element={

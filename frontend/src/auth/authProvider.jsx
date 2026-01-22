@@ -1,7 +1,7 @@
 // src/auth/authProvider.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { login as loginApi, logout as logoutApi, refreshToken as refreshApi } from "../api/authClient";
+import { login as loginApi, register as registerApi, logout as logoutApi, refreshToken as refreshApi } from "../api/authClient";
 import { setAccessToken, clearAccessToken } from "../api/axios";
 
 export const AuthContext = createContext(null);
@@ -43,6 +43,15 @@ export const AuthProvider = ({ children }) => {
     attemptRefresh();
   }, [queryClient]);
 
+  const registerMutation = useMutation({
+    mutationFn: (creds) => registerApi(creds),
+    onSuccess: (data) => {
+      setUser(data.user);
+      // invalidate queries that need auth
+      queryClient.invalidateQueries(["me"]);
+    },
+  });
+
   const loginMutation = useMutation({
     mutationFn: (creds) => loginApi(creds),
     onSuccess: (data) => {
@@ -64,8 +73,10 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       setUser,
+      register: registerMutation.mutateAsync,
       login: loginMutation.mutateAsync,
       logout: logoutMutation.mutateAsync,
+      isRegistering: registerMutation.isLoading,
       isLoggingIn: loginMutation.isLoading,
       isInitializing,
     }}>
